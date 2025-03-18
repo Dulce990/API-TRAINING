@@ -6,6 +6,10 @@ from enum import Enum
 class EstatusUsuario(str, Enum):
     Activo = "Activo"
     Inactivo = "Inactivo"
+    
+class RolUsuario(str, Enum):
+    Usuario = "Usuario"
+    Administrador = "Administrador"
 
 class UsuarioBase(BaseModel):
     nombre_usuario: str
@@ -15,6 +19,7 @@ class UsuarioBase(BaseModel):
     estatus: EstatusUsuario = EstatusUsuario.Activo
     fecha_registro: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
+    rol: RolUsuario = RolUsuario.Usuario  # ✅ Nuevo campo
 
     class Config:
         from_attributes = True
@@ -29,6 +34,7 @@ class UsuarioUpdate(BaseModel):
     numero_telefonico_movil: Optional[str] = None
     estatus: Optional[EstatusUsuario] = None
     fecha_actualizacion: Optional[datetime] = None  # Se actualiza en la BD automáticamente
+    rol: Optional[RolUsuario] = None  # ✅ Nuevo campo
 
     class Config:
         from_attributes = True
@@ -51,3 +57,7 @@ class UsuarioR(BaseModel):
     id: int
     nombre_usuario: str
     correo_electronico: str
+
+class RolUsuario(str, Enum):
+    Usuario = "Usuario"
+    Administrador = "Administrador"

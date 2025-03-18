@@ -43,16 +43,15 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer_sche
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido o expirado",
         )
-
 # ✅ Ruta para login
-@router.post("/login", response_model=Token, tags=["Usuarios"])
+@router.post("/login")  
 def login(user_data: UsuarioLogin, db: Session = Depends(get_db)):
-    user = get_usuario_by_email(db, email=user_data.correo_electronico)
+    user = db.query(Usuario).filter(Usuario.correo_electronico == user_data.correo_electronico).first()
     if not user or not bcrypt.checkpw(user_data.contrasena.encode('utf-8'), user.contrasena.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Correo o contraseña incorrectos")
     
-    access_token = create_access_token(data={"sub": user.correo_electronico})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(data={"sub": user.correo_electronico, "rol": user.rol})  # 👈 Añadir rol al token
+    return {"access_token": access_token, "token_type": "bearer", "rol": user.rol}
 
 @router.get("/", response_model=List[UsuarioR], tags=["Usuarios"])
 def read_usuarios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
@@ -67,7 +66,8 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
         correo_electronico=usuario.correo_electronico,
         contrasena=hashed_password.decode('utf-8'),
         numero_telefonico_movil=usuario.numero_telefonico_movil,
-        estatus=usuario.estatus
+        estatus=usuario.estatus,
+        rol=usuario.rol 
     )
     db.add(nuevo_usuario)
     db.commit()

@@ -6,6 +6,10 @@ from datetime import datetime
 class EstatusUsuario(str, enum.Enum):
     Activo = "Activo"
     Inactivo = "Inactivo"
+    
+class RolUsuario(str, enum.Enum):
+    Usuario = "Usuario"
+    Administrador = "Administrador"
 
 class Usuario(Base):
     __tablename__ = "tbb_usuarios"
@@ -18,4 +22,5 @@ class Usuario(Base):
     estatus = Column(Enum(EstatusUsuario), default=EstatusUsuario.Activo)
     fecha_registro = Column(DateTime, default=datetime.utcnow)
     fecha_actualizacion = None
+    rol = Column(Enum(RolUsuario), default=RolUsuario.Usuario)  # ✅ Nuevo campo
 

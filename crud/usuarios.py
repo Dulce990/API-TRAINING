@@ -22,7 +22,8 @@ def create_usuario(db: Session, usuario: UsuarioCreate):
         correo_electronico=usuario.correo_electronico,
         contrasena=hashed_password.decode('utf-8'),  # Convertir bytes a string
         numero_telefonico_movil=usuario.numero_telefonico_movil,
-        estatus=usuario.estatus
+        estatus=usuario.estatus,
+        rol=usuario.rol
     )
     
     db.add(nuevo_usuario)
