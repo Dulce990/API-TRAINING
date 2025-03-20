@@ -1,27 +1,26 @@
-from sqlalchemy import Column, Integer, String, Date, Text, Enum, TIMESTAMP
-from config.db import Base
-from datetime import datetime
-import enum
+from typing import Optional
+from pydantic import BaseModel, EmailStr
+from datetime import datetime, date
+from enum import Enum
 
-class SexoEnum(str, enum.Enum):
+class SexoEnum(str, Enum):
     Masculino = "Masculino"
     Femenino = "Femenino"
     Otro = "Otro"
 
-class ExpedienteMedico(Base):
-    __tablename__ = "tbb_expediente_medico"  # Verifica que la tabla exista en tu base de datos
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    nombre = Column(String(50), nullable=False)
-    apellido = Column(String(50), nullable=False)
-    fecha_nacimiento = Column(Date, nullable=False)
-    sexo = Column(Enum(SexoEnum), nullable=False)
-    curp = Column(String(18), nullable=False, unique=True)
-    fecha_registro = Column(TIMESTAMP, default=datetime.utcnow)
-    direccion = Column(String(255))
-    telefono = Column(String(15))
-    correo_electronico = Column(String(100))
-    fecha_ultima_de_evaluacion = Column(Date)
-    antecedentes_medicos = Column(Text)
-    lesiones_previas = Column(Text)
-    presion_arterial = Column(String(20))
+class ExpedienteMedicoModel(BaseModel):
+    nombre: str
+    apellido: str
+    fecha_nacimiento: date
+    sexo: SexoEnum
+    curp: Optional[str] = None
+    direccion: Optional[str] = None
+    telefono: Optional[str] = None
+    correo_electronico: Optional[EmailStr] = None
+    fecha_ultima_de_evaluacion: Optional[date] = None
+    antecedentes_medicos: Optional[str] = None
+    lesiones_previas: Optional[str] = None
+    presion_arterial: Optional[str] = None
+    estatura: Optional[float] = None
+    peso: Optional[float] = None
+    fecha_registro: Optional[datetime] = datetime.utcnow()

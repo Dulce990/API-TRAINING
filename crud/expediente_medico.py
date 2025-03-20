@@ -1,39 +1,30 @@
-from sqlalchemy.orm import Session
-from models.expediente_medico import ExpedienteMedico  # Asegúrate de que la importación del modelo sea correcta
-from schemas.expediente_medico import ExpedienteMedicoCreate, ExpedienteMedicoUpdate
+from typing import List
+from config.db import mongo_db
+from models.expediente_medico import ExpedienteMedicoModel
 
-# Función para obtener expedientes médicos
-def get_expediente_medico(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(ExpedienteMedico).offset(skip).limit(limit).all()
+# Obtener todos los expedientes médicos
+async def get_expedientes(skip: int = 0, limit: int = 10) -> List[ExpedienteMedicoModel]:
+    expedientes = await mongo_db["expedientes_medicos"].find().skip(skip).limit(limit).to_list(length=limit)
+    return expedientes
 
-# Función para obtener un expediente médico por su ID
-def get_expediente_medico_by_id(db: Session, expediente_id: int):
-    return db.query(ExpedienteMedico).filter(ExpedienteMedico.id == expediente_id).first()
+# Obtener expediente médico por ID
+async def get_expediente_by_id(expediente_id: str):
+    expediente = await mongo_db["expedientes_medicos"].find_one({"_id": expediente_id})
+    return expediente
 
-# Función para crear un expediente médico
-def create_expediente_medico(db: Session, expediente: ExpedienteMedicoCreate):
-    nuevo_expediente = ExpedienteMedico(**expediente.dict())  # Asegúrate de pasar correctamente los datos
-    db.add(nuevo_expediente)
-    db.commit()
-    db.refresh(nuevo_expediente)
-    return nuevo_expediente
+# Crear expediente médico
+async def create_expediente(expediente: ExpedienteMedicoModel):
+    result = await mongo_db["expedientes_medicos"].insert_one(expediente.dict())
+    return result.inserted_id
 
-# Función para actualizar un expediente médico
-def update_expediente_medico(db: Session, expediente_id: int, expediente: ExpedienteMedicoUpdate):
-    db_expediente = db.query(ExpedienteMedico).filter(ExpedienteMedico.id == expediente_id).first()
-    if not db_expediente:
-        return None
-    for key, value in expediente.dict(exclude_unset=True).items():
-        setattr(db_expediente, key, value)
-    db.commit()
-    db.refresh(db_expediente)
-    return db_expediente
+# Actualizar expediente médico
+async def update_expediente(expediente_id: str, expediente: dict):
+    result = await mongo_db["expedientes_medicos"].update_one(
+        {"_id": expediente_id}, {"$set": expediente}
+    )
+    return result.modified_count > 0
 
-# Función para eliminar un expediente médico
-def delete_expediente_medico(db: Session, expediente_id: int):
-    db_expediente = db.query(ExpedienteMedico).filter(ExpedienteMedico.id == expediente_id).first()
-    if not db_expediente:
-        return False
-    db.delete(db_expediente)
-    db.commit()
-    return True
+# Eliminar expediente médico
+async def delete_expediente(expediente_id: str):
+    result = await mongo_db["expedientes_medicos"].delete_one({"_id": expediente_id})
+    return result.deleted_count > 0
