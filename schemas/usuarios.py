@@ -57,6 +57,10 @@ class UsuarioR(BaseModel):
     id: int
     nombre_usuario: str
     correo_electronico: str
+    rol: str
+    estatus: str
+    numero_telefonico_movil: str
+    fecha_registro: datetime
 
 class RolUsuario(str, Enum):
     Usuario = "Usuario"
