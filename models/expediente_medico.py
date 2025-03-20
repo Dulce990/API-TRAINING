@@ -24,3 +24,18 @@ class ExpedienteMedicoModel(BaseModel):
     estatura: Optional[float] = None
     peso: Optional[float] = None
     fecha_registro: Optional[datetime] = datetime.utcnow()
+    
+    def dict(self, **kwargs):
+        data = super().dict(**kwargs)
+        data['sexo'] = self.sexo.value  # Convertir el Enum a su valor
+        return data
+    
+    @classmethod
+    def parse_obj(cls, obj):
+        if isinstance(obj.get('fecha_nacimiento'), datetime.date):
+            obj['fecha_nacimiento'] = datetime.combine(obj['fecha_nacimiento'], datetime.min.time())
+        if isinstance(obj.get('fecha_ultima_de_evaluacion'), datetime.date):
+            obj['fecha_ultima_de_evaluacion'] = datetime.combine(obj['fecha_ultima_de_evaluacion'], datetime.min.time())
+        return super().parse_obj(obj)
+
+

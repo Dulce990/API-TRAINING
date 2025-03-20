@@ -19,10 +19,15 @@ app = FastAPI(
     description="API para gestionar usuarios, expedientes médicos, dietas y ejercicios del gimnasio"
 )
 
+# Permitir solicitudes desde el frontend (localhost:8080)
+origins = [
+    "http://localhost:8080",  # Tu app de Vue
+]
+
 # Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes restringirlo a dominios específicos si lo deseas
+    allow_origins=origins,   # Puedes restringirlo a dominios específicos si lo deseas
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los encabezados
