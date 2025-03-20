@@ -78,7 +78,7 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
 # ✅ Obtener usuario por ID
 @router.get("/{usuario_id}", response_model=UsuarioR, tags=["Usuarios"])
 def obtener_usuario(usuario_id: int, db: Session = Depends(get_db), email: str = Depends(verify_token)):
-    usuario = db.query(Usuario).filter(Usuario.ID == usuario_id).first()
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return usuario
@@ -86,7 +86,7 @@ def obtener_usuario(usuario_id: int, db: Session = Depends(get_db), email: str =
 # ✅ Actualizar usuario
 @router.put("/{usuario_id}", response_model=UsuarioR, tags=["Usuarios"])
 def actualizar_usuario(usuario_id: int, usuario_data: UsuarioUpdate, db: Session = Depends(get_db), email: str = Depends(verify_token)):
-    usuario = db.query(Usuario).filter(Usuario.ID == usuario_id).first()
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     
@@ -100,7 +100,7 @@ def actualizar_usuario(usuario_id: int, usuario_data: UsuarioUpdate, db: Session
 # ✅ Eliminar usuario
 @router.delete("/{usuario_id}", tags=["Usuarios"])
 def eliminar_usuario(usuario_id: int, db: Session = Depends(get_db), email: str = Depends(verify_token)):
-    usuario = db.query(Usuario).filter(Usuario.ID == usuario_id).first()
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     
