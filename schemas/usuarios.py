@@ -44,6 +44,7 @@ class Usuario(UsuarioBase):
 
     class Config:
         from_attributes = True
+        
 
 class UsuarioLogin(BaseModel):
     correo_electronico: str

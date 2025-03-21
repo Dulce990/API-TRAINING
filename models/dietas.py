@@ -1,9 +1,11 @@
-from sqlalchemy import Boolean, Column, Enum, Float, Integer, String, Text, DateTime
+from sqlalchemy import Boolean, Column, Enum, Float, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base
 import datetime
+from sqlalchemy.orm import relationship
+from config.db import Base
 
-# Crear la base de datos
-Base = declarative_base()
+
+
 
 class Dieta(Base):
     __tablename__ = "tbd_dietas"
@@ -21,3 +23,6 @@ class Dieta(Base):
     estatus = Column(Boolean, default=True, nullable=False)  # Manejar como bit(1)
     fecha_registro = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
     fecha_actualizacion = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow, nullable=True)
+# Relación con Usuario
+    user_id  = Column(Integer, ForeignKey("tbb_usuarios.id"), nullable=True)
+    usuario = relationship("Usuario", back_populates="dietas")

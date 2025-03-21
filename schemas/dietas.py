@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 import datetime
+from schemas.usuarios import UsuarioR  # Importa el esquema de salid
 
 class DietaBase(BaseModel):
     nombre: str
@@ -14,8 +15,10 @@ class DietaBase(BaseModel):
     observaciones: Optional[str] = None
     estatus: bool
 
+
 class DietaCreate(DietaBase):
-    pass
+       user_id: int  # ID del usuario a
+
 
 class DietaUpdate(DietaBase):
     nombre: Optional[str] = None
@@ -33,6 +36,7 @@ class DietaInDB(DietaBase):
     id: int
     fecha_registro: datetime.datetime
     fecha_actualizacion: Optional[datetime.datetime] = None
+    usuario: Optional[UsuarioR] = None  # Incluye la relación usuario
 
     class Config:
         from_attributes = True

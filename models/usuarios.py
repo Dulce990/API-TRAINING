@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, null
+from sqlalchemy import Column, Integer, String, DateTime, Enum
 from config.db import Base
 import enum
 from datetime import datetime
+from sqlalchemy.orm import relationship
 
 class EstatusUsuario(str, enum.Enum):
     Activo = "Activo"
@@ -23,4 +24,8 @@ class Usuario(Base):
     fecha_registro = Column(DateTime, default=datetime.utcnow)
     fecha_actualizacion = None
     rol = Column(Enum(RolUsuario), default=RolUsuario.Usuario)  # ✅ Nuevo campo
+    fecha_actualizacion = Column(DateTime, nullable=True)
+    
 
+    # Relación con Dieta
+    dietas = relationship("Dieta", back_populates="usuario")
