@@ -1,6 +1,9 @@
 from sqlalchemy.orm import Session
 from models.dietas import Dieta  # Asegúrate de usar el nombre correcto del modelo
 from schemas.dietas import DietaCreate, DietaUpdate
+from models.usuarios import Usuario
+from models.dietas import Dieta
+from sqlalchemy.orm import joinedload
 
 def get_dietas(db: Session, skip: int = 0, limit: int = 10):
     return db.query(Dieta).offset(skip).limit(limit).all()
@@ -32,3 +35,18 @@ def delete_dieta(db: Session, dieta_id: int):
     db.delete(db_dieta)
     db.commit()
     return True
+
+# Cargar la relación usuario con joinedload
+    return db.query(Dieta).options(joinedload(Dieta.usuario)).offset(skip).limit(limit).all()
+
+def asignar_dieta_a_usuario(db: Session, user_id: int, dieta_data: dict):
+    # Busca al usuario por ID
+    usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+    if not usuario:
+        raise ValueError("Usuario no encontrado")
+# Crea una nueva dieta y la asigna al usuario
+    nueva_dieta = Dieta(**dieta_data, usuario=usuario)
+    db.add(nueva_dieta)
+    db.commit()
+    db.refresh(nueva_dieta)
+    return nueva_dieta

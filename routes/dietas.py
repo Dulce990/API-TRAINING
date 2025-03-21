@@ -3,13 +3,18 @@ from sqlalchemy.orm import Session
 from config.db import get_db
 from models.dietas import Dieta  # Asegúrate de que la importación es correcta
 from schemas.dietas import DietaCreate, DietaUpdate, DietaInDB  # Importa también el modelo de respuesta correcto
-
+from crud.dietas import get_dietas
 router = APIRouter(prefix="/dietas", tags=["Dietas"])
+from crud.dietas import get_dietas
+
+
 
 # Obtener todas las dietas
-@router.get("/", response_model=list[DietaInDB])  # Asegúrate de usar DietaInDB para las respuestas
-def get_dietas(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return db.query(Dieta).offset(skip).limit(limit).all()
+@router.get("/", response_model=list[DietaInDB])
+def get_dietas_endpoint(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    dietas = get_dietas(db, skip=skip, limit=limit)
+    print(dietas)  # Agrega este print para verificar la salida en la consola
+    return dietas
 
 # Obtener una dieta por ID
 @router.get("/{dieta_id}", response_model=DietaInDB)  # También aquí usa DietaInDB

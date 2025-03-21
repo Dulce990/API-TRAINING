@@ -46,3 +46,5 @@ app.include_router(rutinas_router, prefix="/api", tags=["Rutinas"])
 app.include_router(auth_router, prefix="/api", tags=["Auth"])
 app.include_router(image_router, prefix="/api/images", tags=["Images"])
 
+
+
