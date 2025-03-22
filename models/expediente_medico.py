@@ -24,6 +24,7 @@ class ExpedienteMedicoModel(BaseModel):
     estatura: Optional[float] = None
     peso: Optional[float] = None
     fecha_registro: Optional[datetime] = datetime.utcnow()
+    usuario_id: Optional[int] = None 
     
 class ExpedienteUpdateModel(BaseModel):
     nombre: Optional[str] = None

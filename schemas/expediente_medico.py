@@ -24,6 +24,7 @@ class ExpedienteMedicoBase(BaseModel):
     fecha_registro: Optional[datetime] = None
     estatura: Optional[float] = None   # Nuevo campo
     peso: Optional[float] = None       # Nuevo campo
+    usuario_id: Optional[int] = None 
 
 class ExpedienteMedicoCreate(ExpedienteMedicoBase):
     pass
