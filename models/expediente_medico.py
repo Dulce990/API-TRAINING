@@ -25,6 +25,22 @@ class ExpedienteMedicoModel(BaseModel):
     peso: Optional[float] = None
     fecha_registro: Optional[datetime] = datetime.utcnow()
     
+class ExpedienteUpdateModel(BaseModel):
+    nombre: Optional[str] = None
+    apellido: Optional[str] = None
+    fecha_nacimiento: Optional[date] = None
+    sexo: Optional[SexoEnum] = None
+    curp: Optional[str] = None
+    direccion: Optional[str] = None
+    telefono: Optional[str] = None
+    correo_electronico: Optional[EmailStr] = None
+    fecha_ultima_de_evaluacion: Optional[date] = None
+    antecedentes_medicos: Optional[str] = None
+    lesiones_previas: Optional[str] = None
+    presion_arterial: Optional[str] = None
+    estatura: Optional[float] = None
+    peso: Optional[float] = None
+
     def dict(self, **kwargs):
         data = super().dict(**kwargs)
         data['sexo'] = self.sexo.value  # Convertir el Enum a su valor

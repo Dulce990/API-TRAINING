@@ -28,7 +28,7 @@ class ExpedienteMedicoBase(BaseModel):
 class ExpedienteMedicoCreate(ExpedienteMedicoBase):
     pass
 
-class ExpedienteMedicoUpdate(BaseModel):
+class  ExpedienteUpdateModel(BaseModel):
     nombre: Optional[str] = None
     apellido: Optional[str] = None
     fecha_nacimiento: Optional[date] = None

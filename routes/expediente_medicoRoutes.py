@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
+from datetime import datetime, date, time
 from crud.expediente_medico import (
     get_expedientes,
     get_expediente_by_id,
@@ -7,35 +8,51 @@ from crud.expediente_medico import (
     update_expediente,
     delete_expediente
 )
-from models.expediente_medico import ExpedienteMedicoModel
+from models.expediente_medico import ExpedienteMedicoModel, ExpedienteUpdateModel
 
 router = APIRouter()
 
-@router.get("/expediente_medico", response_model=List[ExpedienteMedicoModel])
+def convert_dates(update_dict: dict) -> dict:
+    for key, value in update_dict.items():
+        if isinstance(value, date) and not isinstance(value, datetime):
+            update_dict[key] = datetime.combine(value, time.min)
+    return update_dict
+
+# Obtener lista de expedientes (con paginación)
+@router.get("/expedientes", response_model=List[ExpedienteMedicoModel])
 async def read_expedientes(skip: int = 0, limit: int = 10):
     return await get_expedientes(skip, limit)
 
-@router.get("/expediente_medico//{expediente_id}", response_model=ExpedienteMedicoModel)
-async def read_expediente(expediente_id: str):
-    expediente = await get_expediente_by_id(expediente_id)
+# Obtener expediente por CURP
+@router.get("/expedientes/{curp}", response_model=ExpedienteMedicoModel)
+async def read_expediente(curp: str):
+    expediente = await get_expediente_by_id(curp)
     if not expediente:
         raise HTTPException(status_code=404, detail="Expediente no encontrado")
     return expediente
 
-@router.post("/expediente_medico", response_model=str)
+# Crear un nuevo expediente
+@router.post("/expedientes", response_model=ExpedienteMedicoModel)
 async def create_new_expediente(expediente: ExpedienteMedicoModel):
-    return await create_expediente(expediente)
+    nuevo_expediente = await create_expediente(expediente)
+    if not nuevo_expediente:
+        raise HTTPException(status_code=400, detail="Error al crear el expediente")
+    return nuevo_expediente
 
-@router.put("/expediente_medico/{expediente_id}")
-async def update_existing_expediente(expediente_id: str, expediente: dict):
-    success = await update_expediente(expediente_id, expediente)
+# Actualizar expediente existente por CURP
+@router.put("/expedientes/{curp}", response_model=ExpedienteMedicoModel)
+async def update_existing_expediente(curp: str, expediente: ExpedienteUpdateModel):
+    update_data = expediente.dict(exclude_unset=True)
+    update_data = convert_dates(update_data)
+    expediente_actualizado = await update_expediente(curp, update_data)
+    if not expediente_actualizado:
+        raise HTTPException(status_code=404, detail="Expediente no encontrado")
+    return expediente_actualizado
+
+# Eliminar expediente existente por CURP
+@router.delete("/expedientes/{curp}", response_model=dict)
+async def delete_existing_expediente(curp: str):
+    success = await delete_expediente(curp)
     if not success:
         raise HTTPException(status_code=404, detail="Expediente no encontrado")
-    return {"message": "Expediente actualizado"}
-
-@router.delete("/expediente_medico/{expediente_id}")
-async def delete_existing_expediente(expediente_id: str):
-    success = await delete_expediente(expediente_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Expediente no encontrado")
-    return {"message": "Expediente eliminado"}
+    return {"message": "Expediente eliminado correctamente"}
