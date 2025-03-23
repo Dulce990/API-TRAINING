@@ -51,7 +51,7 @@ def login(user_data: UsuarioLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Correo o contraseña incorrectos")
     
     access_token = create_access_token(data={"sub": user.correo_electronico, "rol": user.rol})  # 👈 Añadir rol al token
-    return {"access_token": access_token, "token_type": "bearer", "rol": user.rol}
+    return {"access_token": access_token, "token_type": "bearer", "rol": user.rol,"usuario_id": user.id}
 
 @router.get("/", response_model=List[UsuarioR], tags=["Usuarios"])
 def read_usuarios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):

@@ -4,6 +4,7 @@ from config.db import get_db
 from crud.ejercicios import get_ejercicios, get_ejercicio_by_id, create_ejercicio, update_ejercicio, delete_ejercicio
 from schemas.ejercicios import EjercicioCreate, EjercicioUpdate, EjercicioResponse
 from typing import List
+from models.ejercicios import Ejercicio
 
 router = APIRouter(prefix="/ejercicios", tags=["Ejercicios"])
 
@@ -35,3 +36,7 @@ def delete_existing_ejercicio(ejercicio_id: int, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
     return {"message": "Ejercicio eliminado exitosamente"}
+
+@router.get("/usuario/{usuario_id}", response_model=List[EjercicioResponse])
+def get_ejercicios_by_usuario(usuario_id: int, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    return db.query(Ejercicio).filter(Ejercicio.user_id == usuario_id).offset(skip).limit(limit).all()
