@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, String, Enum, DateTime, Boolean
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String, Enum, DateTime, Boolean
 import enum
 from datetime import datetime
-
-Base = declarative_base()
+from sqlalchemy.orm import relationship
+from config.db import Base
 
 class TipoEjercicio(str, enum.Enum):
     Aerobico = "Aerobico"
@@ -30,3 +29,7 @@ class Ejercicio(Base):
     fecha_actualizacion = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     recomendaciones = Column(String(255))
     restricciones = Column(String(255))
+
+    # Relación con Usuario
+    user_id  = Column(Integer, ForeignKey("tbb_usuarios.id"), nullable=True)
+    usuario = relationship("Usuario", back_populates="ejercicios")

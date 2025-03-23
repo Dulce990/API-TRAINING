@@ -1,12 +1,12 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from models.ejercicios import Ejercicio
 from schemas.ejercicios import EjercicioCreate, EjercicioUpdate
 
 def get_ejercicios(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(Ejercicio).offset(skip).limit(limit).all()
+    return db.query(Ejercicio).options(joinedload(Ejercicio.usuario)).offset(skip).limit(limit).all()
 
 def get_ejercicio_by_id(db: Session, ejercicio_id: int):
-    return db.query(Ejercicio).filter(Ejercicio.id == ejercicio_id).first()
+    return db.query(Ejercicio).options(joinedload(Ejercicio.usuario)).filter(Ejercicio.id == ejercicio_id).first()
 
 def create_ejercicio(db: Session, ejercicio: EjercicioCreate):
     nuevo_ejercicio = Ejercicio(**ejercicio.dict())
@@ -14,6 +14,7 @@ def create_ejercicio(db: Session, ejercicio: EjercicioCreate):
     db.commit()
     db.refresh(nuevo_ejercicio)
     return nuevo_ejercicio
+
 
 def update_ejercicio(db: Session, ejercicio_id: int, ejercicio: EjercicioUpdate):
     db_ejercicio = db.query(Ejercicio).filter(Ejercicio.id == ejercicio_id).first()
