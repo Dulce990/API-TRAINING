@@ -51,3 +51,11 @@ async def update_expediente(curp: str, expediente: dict):
 async def delete_expediente(curp: str):
     result = await mongo_db["expedientes_medicos"].delete_one({"curp": curp})
     return result.deleted_count > 0
+
+async def get_expediente_by_id(usuario_id: int):
+    expediente = await mongo_db["expedientes_medicos"].find_one({"usuario_id": usuario_id})
+    if expediente:
+        print(type(expediente["usuario_id"]))  # 👈 Verifica el tipo de dato
+    return expediente
+   
+

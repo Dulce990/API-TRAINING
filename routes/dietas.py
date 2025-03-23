@@ -7,8 +7,6 @@ from crud.dietas import get_dietas
 router = APIRouter(prefix="/dietas", tags=["Dietas"])
 from crud.dietas import get_dietas
 
-
-
 # Obtener todas las dietas
 @router.get("/", response_model=list[DietaInDB])
 def get_dietas_endpoint(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
@@ -57,3 +55,8 @@ def delete_dieta(dieta_id: int, db: Session = Depends(get_db)):
     db.delete(db_dieta)
     db.commit()
     return {"message": "Dieta eliminada correctamente"}
+
+@router.get("/usuario/{usuario_id}", response_model=list[DietaInDB])
+def get_dietas_by_usuario(usuario_id: int, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    return db.query(Dieta).filter(Dieta.user_id == usuario_id).offset(skip).limit(limit).all()
+
