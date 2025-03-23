@@ -4,9 +4,6 @@ import datetime
 from sqlalchemy.orm import relationship
 from config.db import Base
 
-
-
-
 class Dieta(Base):
     __tablename__ = "tbd_dietas"
 
