@@ -29,6 +29,7 @@ class Ejercicio(Base):
     fecha_actualizacion = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     recomendaciones = Column(String(255))
     restricciones = Column(String(255))
+    completado = Column(Boolean, default=False)  # Nuevo campo
 
     # Relación con Usuario
     user_id  = Column(Integer, ForeignKey("tbb_usuarios.id"), nullable=True)
