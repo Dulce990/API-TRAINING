@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
+<<<<<<< HEAD
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
+=======
+>>>>>>> 763dad9dfd04815a945f7bcd84bfe37958e249de
 from sqlalchemy.orm import Session
 from config.db import get_db
 from crud.indicadores_nutricionales import get_indicadores, get_indicador_by_id, create_indicador, update_indicador, delete_indicador
