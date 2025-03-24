@@ -1,10 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-<<<<<<< HEAD
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
-=======
->>>>>>> 763dad9dfd04815a945f7bcd84bfe37958e249de
 from sqlalchemy.orm import Session
 from config.db import get_db
 from crud.rutinas import (
