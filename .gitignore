@@ -5,3 +5,5 @@ __pycache__/
 
 /.env
 /config/db.py
+
+node_modules

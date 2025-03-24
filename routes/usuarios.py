@@ -54,8 +54,9 @@ def login(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer", "rol": user.rol,"usuario_id": user.id}
 
 @router.get("/", response_model=List[UsuarioR], tags=["Usuarios"])
-def read_usuarios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def read_usuarios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), email: str = Depends(verify_token)):
     return get_usuarios(db, skip, limit)
+
 
 # ✅ Crear usuario
 @router.post("/", response_model=UsuarioR, tags=["Usuarios"])
