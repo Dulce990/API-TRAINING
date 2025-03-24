@@ -30,6 +30,7 @@ class Ejercicio(Base):
     recomendaciones = Column(String(255))
     restricciones = Column(String(255))
     completado = Column(Boolean, default=False)  # Nuevo campo
+    objetivo = Column(String(255), nullable=True)  # Nuevo campo
 
     # Relación con Usuario
     user_id  = Column(Integer, ForeignKey("tbb_usuarios.id"), nullable=True)
