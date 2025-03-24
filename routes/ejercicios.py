@@ -74,26 +74,32 @@ def get_ejercicios_by_usuario(usuario_id: int, skip: int = 0, limit: int = 10, d
     return db.query(Ejercicio).filter(Ejercicio.user_id == usuario_id).offset(skip).limit(limit).all()
 
 # Crear un endpoint para obtener ejercicios completados por usuario y fecha
+from sqlalchemy.sql import extract  # Importa extract para trabajar con fechas
+
 @router.get("/progreso/{usuario_id}", response_model=dict)
-def progreso_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    # Verificar si el usuario existe
-    ejercicios_usuario = db.query(Ejercicio).filter(Ejercicio.user_id == usuario_id).all()
+def progreso_usuario(usuario_id: int, mes: int, db: Session = Depends(get_db)):
+    # Filtrar ejercicios por usuario y mes usando extract
+    ejercicios_usuario = db.query(Ejercicio).filter(
+        Ejercicio.user_id == usuario_id,
+        extract('month', Ejercicio.fecha_registro) == mes  # Extraer el mes
+    ).all()
+
     if not ejercicios_usuario:
-        return {"message": "No hay ejercicios para este usuario", "data": []}
+        return {"message": "No hay ejercicios para este usuario en este mes", "data": [], "objetivo": None}
 
-    # Filtrar ejercicios completados
-    ejercicios_completados = [
-        ejercicio for ejercicio in ejercicios_usuario if ejercicio.completado
-    ]
-
-    # Procesar los datos para agruparlos por día del mes
+    ejercicios_completados = [ej for ej in ejercicios_usuario if ej.completado]
     conteo_por_dia = [0] * 31
     for ejercicio in ejercicios_completados:
-        dia = ejercicio.fecha_registro.day - 1  # Obtener el día del mes (0-indexado)
+        dia = ejercicio.fecha_registro.day - 1
         conteo_por_dia[dia] += 1
 
-    return {"message": "Progreso obtenido correctamente", "data": conteo_por_dia}
+    total_completados = sum(conteo_por_dia)
+    porcentaje = (total_completados / 31) * 100
 
+    # Obtener el objetivo del usuario (asumiendo que todos los ejercicios tienen el mismo objetivo)
+    objetivo = ejercicios_usuario[0].objetivo if ejercicios_usuario else None
+
+    return {"message": "Progreso obtenido correctamente", "data": conteo_por_dia, "porcentaje": porcentaje, "objetivo": objetivo}
 
 @router.put("/{ejercicio_id}/completar", response_model=EjercicioResponse)
 def marcar_como_completado(ejercicio_id: int, db: Session = Depends(get_db)):
