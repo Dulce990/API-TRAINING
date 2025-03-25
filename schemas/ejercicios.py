@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 from enum import Enum
+from datetime import date
 
 from schemas.usuarios import UsuarioR
 
@@ -27,6 +28,7 @@ class EjercicioBase(BaseModel):
     restricciones: Optional[str] = None
     completado: bool = False  # Nuevo campo
     objetivo: Optional[str] = None  # Nuevo campo
+    fecha_personalizada: Optional[date] = None  # Nuevo campo
 
 
 class EjercicioCreate(EjercicioBase):
