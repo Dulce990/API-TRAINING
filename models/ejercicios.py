@@ -3,6 +3,7 @@ import enum
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from config.db import Base
+from sqlalchemy import Date
 
 class TipoEjercicio(str, enum.Enum):
     Aerobico = "Aerobico"
@@ -31,6 +32,7 @@ class Ejercicio(Base):
     restricciones = Column(String(255))
     completado = Column(Boolean, default=False)  # Nuevo campo
     objetivo = Column(String(255), nullable=True)  # Nuevo campo
+    fecha_personalizada = Column(Date, nullable=True)  # Nuevo campo para la fecha personalizada
 
     # Relación con Usuario
     user_id  = Column(Integer, ForeignKey("tbb_usuarios.id"), nullable=True)

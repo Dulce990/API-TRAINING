@@ -53,6 +53,7 @@ def read_ejercicio(ejercicio_id: int, db: Session = Depends(get_db), user_id: st
 
 @router.post("/", response_model=EjercicioResponse)
 def create_new_ejercicio(ejercicio: EjercicioCreate, db: Session = Depends(get_db), user_id: str = Depends(verify_token)):
+    print(ejercicio.dict())  # Imprime los datos recibidos
     return create_ejercicio(db, ejercicio)
 
 @router.put("/{ejercicio_id}", response_model=EjercicioResponse)
@@ -77,11 +78,13 @@ def get_ejercicios_by_usuario(usuario_id: int, skip: int = 0, limit: int = 10, d
 from sqlalchemy.sql import extract  # Importa extract para trabajar con fechas
 
 @router.get("/progreso/{usuario_id}", response_model=dict)
-def progreso_usuario(usuario_id: int, mes: int, db: Session = Depends(get_db)):
-    # Filtrar ejercicios por usuario y mes usando extract
+def progreso_usuario(usuario_id: int, mes: int = None, db: Session = Depends(get_db)):
+    if mes is None:
+        raise HTTPException(status_code=400, detail="El parámetro 'mes' es obligatorio.")
+    # Filtrar ejercicios por usuario y mes usando fecha_personalizada
     ejercicios_usuario = db.query(Ejercicio).filter(
         Ejercicio.user_id == usuario_id,
-        extract('month', Ejercicio.fecha_registro) == mes  # Extraer el mes
+        extract('month', Ejercicio.fecha_personalizada) == mes  # Extraer el mes de fecha_personalizada
     ).all()
 
     if not ejercicios_usuario:
@@ -90,8 +93,9 @@ def progreso_usuario(usuario_id: int, mes: int, db: Session = Depends(get_db)):
     ejercicios_completados = [ej for ej in ejercicios_usuario if ej.completado]
     conteo_por_dia = [0] * 31
     for ejercicio in ejercicios_completados:
-        dia = ejercicio.fecha_registro.day - 1
-        conteo_por_dia[dia] += 1
+        if ejercicio.fecha_personalizada:
+            dia = ejercicio.fecha_personalizada.day - 1
+            conteo_por_dia[dia] += 1
 
     total_completados = sum(conteo_por_dia)
     porcentaje = (total_completados / 31) * 100
