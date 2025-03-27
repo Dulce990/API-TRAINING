@@ -105,6 +105,9 @@ def progreso_usuario(usuario_id: int, mes: int = None, db: Session = Depends(get
 
     return {"message": "Progreso obtenido correctamente", "data": conteo_por_dia, "porcentaje": porcentaje, "objetivo": objetivo}
 
+# filepath: c:\Users\soyme\Desktop\8VO CUATRI\DEVGENIUS\API-TRAINING\routes\ejercicios.py
+from utils.socket_manager import socket_manager  # Importa socket_manager
+
 @router.put("/{ejercicio_id}/completar", response_model=EjercicioResponse)
 def marcar_como_completado(ejercicio_id: int, db: Session = Depends(get_db), user_id: str = Depends(verify_token)):
     db_ejercicio = db.query(Ejercicio).filter(Ejercicio.id == ejercicio_id).first()
@@ -113,4 +116,9 @@ def marcar_como_completado(ejercicio_id: int, db: Session = Depends(get_db), use
     db_ejercicio.completado = True  # Marcar como completado
     db.commit()
     db.refresh(db_ejercicio)
+
+    # Emitir evento de actualización
+    if socket_manager:
+        socket_manager.emit("update_progress", {"user_id": db_ejercicio.user_id})
+
     return db_ejercicio

@@ -15,6 +15,10 @@ from routes.rutinas import router as rutinas_router
 from routes.programas_saludables import router as programas_saludables_router
 from routes.auth import auth_router
 from routes.images import router as image_router
+from utils.socket_manager import init_socket_manager  # Importa la función de inicialización
+
+
+
 
 
 # Creación de la aplicación FastAPI
@@ -36,8 +40,13 @@ app.add_middleware(
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los encabezados
 )
+# Inicializar Socket.IO
+init_socket_manager(app)
+
+
 
 # Incluir las rutas de los módulos
+app.include_router(ejercicios_router, prefix="/api", tags=["Ejercicios"])
 app.include_router(auth_router, prefix="/api/auth", tags=["Autenticación"])  # Agregar las rutas de autenticación
 app.include_router(usuario_router, prefix="/api", tags=["Usuarios"])
 app.include_router(expediente_medico_router, prefix="/api", tags=["Expediente Médico"])
@@ -49,6 +58,7 @@ app.include_router(programas_saludables_router, prefix="/api", tags=["Programas 
 app.include_router(rutinas_router, prefix="/api", tags=["Rutinas"])
 app.include_router(auth_router, prefix="/api", tags=["Auth"])
 app.include_router(image_router, prefix="/api/images", tags=["Images"])
+
 
 @app.exception_handler(HTTPException)
 async def custom_http_exception_handler(request: Request, exc: HTTPException):
@@ -66,4 +76,5 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
         status_code=exc.status_code,
         content={"detail": exc.detail},
     )
+
 
