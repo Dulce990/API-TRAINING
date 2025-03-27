@@ -40,7 +40,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer_sche
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado")
 
 @router.get("/", response_model=List[EjercicioResponse])
-def read_ejercicios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def read_ejercicios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), user_id: str = Depends(verify_token)):
     ejercicios = get_ejercicios(db, skip, limit)
     return ejercicios
   
@@ -78,7 +78,7 @@ def get_ejercicios_by_usuario(usuario_id: int, skip: int = 0, limit: int = 10, d
 from sqlalchemy.sql import extract  # Importa extract para trabajar con fechas
 
 @router.get("/progreso/{usuario_id}", response_model=dict)
-def progreso_usuario(usuario_id: int, mes: int = None, db: Session = Depends(get_db)):
+def progreso_usuario(usuario_id: int, mes: int = None, db: Session = Depends(get_db), user_id: str = Depends(verify_token)):
     if mes is None:
         raise HTTPException(status_code=400, detail="El parámetro 'mes' es obligatorio.")
     # Filtrar ejercicios por usuario y mes usando fecha_personalizada
@@ -106,7 +106,7 @@ def progreso_usuario(usuario_id: int, mes: int = None, db: Session = Depends(get
     return {"message": "Progreso obtenido correctamente", "data": conteo_por_dia, "porcentaje": porcentaje, "objetivo": objetivo}
 
 @router.put("/{ejercicio_id}/completar", response_model=EjercicioResponse)
-def marcar_como_completado(ejercicio_id: int, db: Session = Depends(get_db)):
+def marcar_como_completado(ejercicio_id: int, db: Session = Depends(get_db), user_id: str = Depends(verify_token)):
     db_ejercicio = db.query(Ejercicio).filter(Ejercicio.id == ejercicio_id).first()
     if not db_ejercicio:
         raise HTTPException(status_code=404, detail="Ejercicio no encontrado")
