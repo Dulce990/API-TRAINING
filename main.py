@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.db import mongo_db
+
+from fastapi import HTTPException, Request
+from fastapi.responses import JSONResponse
 # Importación de los routers
 from routes.usuarios import router as usuario_router
 from routes.expediente_medicoRoutes import router as expediente_medico_router
@@ -13,6 +16,7 @@ from routes.programas_saludables import router as programas_saludables_router
 from routes.auth import auth_router
 from routes.images import router as image_router
 from utils.socket_manager import init_socket_manager  # Importa la función de inicialización
+
 
 
 
@@ -54,5 +58,23 @@ app.include_router(programas_saludables_router, prefix="/api", tags=["Programas 
 app.include_router(rutinas_router, prefix="/api", tags=["Rutinas"])
 app.include_router(auth_router, prefix="/api", tags=["Auth"])
 app.include_router(image_router, prefix="/api/images", tags=["Images"])
+
+
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    if exc.status_code == 401:  # Error de autenticación
+        return JSONResponse(
+            status_code=404,  # Cambiar el código de estado a 404
+            content={"detail": "Ruta no encontrada"},
+        )
+    elif exc.status_code == 404:  # Ruta no encontrada
+        return JSONResponse(
+            status_code=404,
+            content={"detail": "Ruta no encontrada"},
+        )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+    )
 
 

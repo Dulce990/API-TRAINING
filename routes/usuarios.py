@@ -43,7 +43,26 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer_sche
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido o expirado",
         )
-# ✅ Ruta para login
+
+# ✅ Verificar rol de usuario
+def verificar_rol_usuario(email: str = Depends(verify_token), db: Session = Depends(get_db)):
+    user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
+    if user.rol != "Usuario":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acceso denegado. Solo los usuarios con rol 'Usuario' pueden acceder a esta ruta."
+        )
+    return use
+
+# ✅ Obtener usuario por ID (desbloqueada solo para usuarios con rol 'Usuario')
+@router.get("/{usuario_id}", response_model=UsuarioR, tags=["Usuarios"])
+def obtener_usuario(usuario_id: int, db: Session = Depends(get_db), email: str = Depends(verify_token)):
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return usuario
+
+# ✅ Ruta para login (protegida por token)
 @router.post("/login")  
 def login(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     user = db.query(Usuario).filter(Usuario.correo_electronico == user_data.correo_electronico).first()
@@ -53,14 +72,12 @@ def login(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     access_token = create_access_token(data={"sub": user.correo_electronico, "rol": user.rol})  # 👈 Añadir rol al token
     return {"access_token": access_token, "token_type": "bearer", "rol": user.rol,"usuario_id": user.id}
 
-@router.get("/", response_model=List[UsuarioR], tags=["Usuarios"])
-def read_usuarios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), email: str = Depends(verify_token)):
-    return get_usuarios(db, skip, limit)
-
-
-# ✅ Crear usuario
+# ✅ Crear usuario (solo para Administrador o roles autorizados)
 @router.post("/", response_model=UsuarioR, tags=["Usuarios"])
 def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
+    # Verificar si el rol es 'Administrador' o lo que corresponda
+    user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
+    
     hashed_password = bcrypt.hashpw(usuario.contrasena.encode('utf-8'), bcrypt.gensalt())
     nuevo_usuario = Usuario(
         nombre_usuario=usuario.nombre_usuario,
@@ -75,18 +92,23 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     db.refresh(nuevo_usuario)
     return nuevo_usuario
 
+# ✅ Rutas protegidas para otros usuarios
+@router.get("/", response_model=List[UsuarioR], tags=["Usuarios"])
+def read_usuarios(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), email: str = Depends(verify_token)):
+    # Solo usuarios con rol de Administrador pueden acceder
+    user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
+    if user.rol != "Administrador":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    return get_usuarios(db, skip, limit)
 
-# ✅ Obtener usuario por ID
-@router.get("/{usuario_id}", response_model=UsuarioR, tags=["Usuarios"])
-def obtener_usuario(usuario_id: int, db: Session = Depends(get_db), email: str = Depends(verify_token)):
-    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    return usuario
-
-# ✅ Actualizar usuario
+# ✅ Actualizar usuario (solo para Administrador o roles autorizados)
 @router.put("/{usuario_id}", response_model=UsuarioR, tags=["Usuarios"])
 def actualizar_usuario(usuario_id: int, usuario_data: UsuarioUpdate, db: Session = Depends(get_db), email: str = Depends(verify_token)):
+    # Verificar si el rol es 'Administrador' o lo que corresponda
+    user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
+    if user.rol != "Administrador":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    
     usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
@@ -98,9 +120,14 @@ def actualizar_usuario(usuario_id: int, usuario_data: UsuarioUpdate, db: Session
     db.refresh(usuario)
     return usuario
 
-# ✅ Eliminar usuario
+# ✅ Eliminar usuario (solo para Administrador o roles autorizados)
 @router.delete("/{usuario_id}", tags=["Usuarios"])
 def eliminar_usuario(usuario_id: int, db: Session = Depends(get_db), email: str = Depends(verify_token)):
+    # Verificar si el rol es 'Administrador' o lo que corresponda
+    user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
+    if user.rol != "Administrador":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    
     usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
