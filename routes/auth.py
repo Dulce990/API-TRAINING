@@ -24,7 +24,7 @@ class RegisterRequest(BaseModel):
 @auth_router.post("/login")
 async def login(data: LoginRequest, db: Session = Depends(get_db)):  
     # Usamos 'db' directamente para realizar la consulta
-    user = db.query(Usuario).filter_by(Username=data.usuario).first()
+    user = db.query(Usuario).filter_by(nombre_usuario=data.usuario).first()
 
     if user and check_password_hash(user.Password, data.contrasena):
         return {"success": True, "message": "Login exitoso"}
