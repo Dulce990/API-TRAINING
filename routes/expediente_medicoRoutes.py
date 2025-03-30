@@ -11,7 +11,7 @@ from crud.expediente_medico import (
     create_expediente,
     update_expediente,
     delete_expediente,
-    get_expediente_by_id
+    get_expedientes_by_usuario_id,
 )
 from models.expediente_medico import ExpedienteMedicoModel, ExpedienteUpdateModel
 
@@ -88,10 +88,9 @@ async def delete_existing_expediente(curp: str, user_id: str = Depends(verify_to
         raise HTTPException(status_code=404, detail="Expediente no encontrado")
     return {"message": "Expediente eliminado correctamente"}
 
-# Obtener expediente por usuario_id (relación con MySQL)
-@router.get("/expedientes/usuario/{usuario_id}", response_model=ExpedienteMedicoModel)
-async def read_expediente_by_usuario_id(usuario_id: int, user_id: str = Depends(verify_token)):
-    expediente = await get_expediente_by_id(usuario_id)
-    if not expediente:
-        raise HTTPException(status_code=404, detail="Expediente no encontrado")
-    return expediente
+@router.get("/expedientes/usuario/{usuario_id}", response_model=List[ExpedienteMedicoModel])
+async def read_expedientes_by_usuario_id(usuario_id: int, user_id: str = Depends(verify_token)):
+    expedientes = await get_expedientes_by_usuario_id(usuario_id)
+    if not expedientes:  # Si la lista está vacía, devuelve un 404
+        raise HTTPException(status_code=404, detail="No se encontraron expedientes para este usuario")
+    return expedientes
