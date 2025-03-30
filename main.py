@@ -6,7 +6,6 @@ from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 # Importación de los routers
 from routes.usuarios import router as usuario_router
-from routes.usuarios_mongo import router as usuario_mongo_router
 from routes.expediente_medicoRoutes import router as expediente_medico_router
 from routes.dietas import router as dietas_router
 from routes.ejercicios import router as ejercicios_router  
@@ -48,7 +47,6 @@ init_socket_manager(app)
 # Incluir las rutas de los módulos
 app.include_router(ejercicios_router, prefix="/api", tags=["Ejercicios"])
 app.include_router(usuario_router, prefix="/api", tags=["Usuarios"])
-app.include_router(usuario_mongo_router, prefix="/api", tags=["Usuarios Mongo"])
 app.include_router(expediente_medico_router, prefix="/api", tags=["Expediente Médico"])
 app.include_router(dietas_router, prefix="/api", tags=["Dietas"])
 app.include_router(ejercicios_router, prefix="/api", tags=["Ejercicios"])  

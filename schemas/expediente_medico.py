@@ -8,7 +8,8 @@ class ExpedienteMedicoBase(BaseModel):
     fecha_ultima_de_evaluacion: Optional[date] = None
     antecedentes_medicos: Optional[str] = None
     lesiones_previas: Optional[str] = None
-    presion_arterial: Optional[str] = None
+    presion_sistolica: Optional[int] = None
+    presion_diastolica: Optional[int] = None
     fecha_registro: Optional[datetime] = None
     estatura: Optional[float] = None   # Nuevo campo
     peso: Optional[float] = None       # Nuevo campo
@@ -22,7 +23,8 @@ class  ExpedienteUpdateModel(BaseModel):
     fecha_ultima_de_evaluacion: Optional[date] = None
     antecedentes_medicos: Optional[str] = None
     lesiones_previas: Optional[str] = None
-    presion_arterial: Optional[str] = None
+    presion_sistolica: Optional[int] = None
+    presion_diastolica: Optional[int] = None
     estatura: Optional[float] = None   # Nuevo campo
     peso: Optional[float] = None       # Nuevo campo
 
