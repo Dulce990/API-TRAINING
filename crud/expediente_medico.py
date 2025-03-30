@@ -53,8 +53,8 @@ async def delete_expediente(curp: str):
     return result.deleted_count > 0
 
 # Obtener expediente médico por usuario_id
-async def get_expediente_by_usuario_id(usuario_id: int):
-    expediente = await mongo_db["expedientes_medicos"].find_one({"usuario_id": usuario_id})
-    if expediente:
-        print(type(expediente["usuario_id"]))  # 👈 Verifica el tipo de dato
-    return expediente
+# Obtener expedientes médicos por usuario_id (puede devolver múltiples registros)
+async def get_expedientes_by_usuario_id(usuario_id: int):
+    expedientes_cursor = mongo_db["expedientes_medicos"].find({"usuario_id": usuario_id})
+    expedientes = await expedientes_cursor.to_list(length=None)  # Convertir cursor en lista
+    return expedientes

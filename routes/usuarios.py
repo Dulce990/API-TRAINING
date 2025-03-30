@@ -52,7 +52,7 @@ def verificar_rol_usuario(email: str = Depends(verify_token), db: Session = Depe
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acceso denegado. Solo los usuarios con rol 'Usuario' pueden acceder a esta ruta."
         )
-    return use
+    return user
 
 # ✅ Obtener usuario por ID (desbloqueada solo para usuarios con rol 'Usuario')
 @router.get("/{usuario_id}", response_model=UsuarioR, tags=["Usuarios"])
@@ -76,7 +76,7 @@ def login(user_data: UsuarioLogin, db: Session = Depends(get_db)):
 @router.post("/", response_model=UsuarioR, tags=["Usuarios"])
 def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     # Verificar si el rol es 'Administrador' o lo que corresponda
-    user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
+    #user = db.query(Usuario).filter(Usuario.correo_electronico == email).first()
     
     hashed_password = bcrypt.hashpw(usuario.contrasena.encode('utf-8'), bcrypt.gensalt())
     nuevo_usuario = Usuario(
