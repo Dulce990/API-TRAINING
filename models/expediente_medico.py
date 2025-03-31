@@ -7,7 +7,8 @@ class ExpedienteMedicoModel(BaseModel):
     fecha_ultima_de_evaluacion: Optional[date] = None
     antecedentes_medicos: Optional[str] = None
     lesiones_previas: Optional[str] = None
-    presion_arterial: Optional[str] = None
+    presion_sistolica: Optional[int] = None
+    presion_diastolica: Optional[int] = None
     estatura: Optional[float] = None
     peso: Optional[float] = None
     fecha_registro: Optional[datetime] = datetime.utcnow()
@@ -18,7 +19,8 @@ class ExpedienteUpdateModel(BaseModel):
     fecha_ultima_de_evaluacion: Optional[date] = None
     antecedentes_medicos: Optional[str] = None
     lesiones_previas: Optional[str] = None
-    presion_arterial: Optional[str] = None
+    presion_sistolica: Optional[int] = None
+    presion_diastolica: Optional[int] = None
     estatura: Optional[float] = None
     peso: Optional[float] = None
     
