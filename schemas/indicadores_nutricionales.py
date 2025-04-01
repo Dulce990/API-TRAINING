@@ -1,12 +1,23 @@
+# schemas/indicadores_nutricionales.py
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from enum import Enum
+
+class NivelActividadEnum(str, Enum):
+    Sedentario = "Sedentario"
+    Ligero = "Ligero"
+    Moderado = "Moderado"
+    Activo = "Activo"
+    Muy_Activo = "Muy_Activo"
 
 class IndicadorNutricionalBase(BaseModel):
-    nombre: str
-    descripcion: str
-    unidad: str
-    valor_referencia: float
+    altura: float
+    peso: float
+    imc: float
+    porcentaje_grasa: float
+    nivel_actividad: NivelActividadEnum
+    usuario_id: Optional[int] = None  # Se recibe el id del usuario en creación
 
 class IndicadorNutricionalCreate(IndicadorNutricionalBase):
     pass
@@ -14,10 +25,16 @@ class IndicadorNutricionalCreate(IndicadorNutricionalBase):
 class IndicadorNutricionalUpdate(IndicadorNutricionalBase):
     pass
 
-class IndicadorNutricionalResponse(IndicadorNutricionalBase):
+class IndicadorNutricionalResponse(BaseModel):
     id: int
+    altura: float
+    peso: float
+    imc: float
+    porcentaje_grasa: float
+    nivel_actividad: NivelActividadEnum
     fecha_registro: datetime
-    fecha_actualizacion: datetime
+    fecha_actualizacion: Optional[datetime] = None
+    usuario_nombre: Optional[str] = None  # Se mostrará el nombre del usuario en vez de solo el id
 
     class Config:
-        from_attributes = True
+        orm_mode = True
