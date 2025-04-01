@@ -1,12 +1,17 @@
-from sqlalchemy.orm import Session
+# crud/indicadores_nutricionales.py
+from sqlalchemy.orm import Session, joinedload
 from models.indicadores_nutricionales import IndicadorNutricional
 from schemas.indicadores_nutricionales import IndicadorNutricionalCreate, IndicadorNutricionalUpdate
 
 def get_indicadores(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(IndicadorNutricional).offset(skip).limit(limit).all()
+    return db.query(IndicadorNutricional)\
+             .options(joinedload(IndicadorNutricional.usuario))\
+             .offset(skip).limit(limit).all()
 
 def get_indicador_by_id(db: Session, indicador_id: int):
-    return db.query(IndicadorNutricional).filter(IndicadorNutricional.id == indicador_id).first()
+    return db.query(IndicadorNutricional)\
+             .options(joinedload(IndicadorNutricional.usuario))\
+             .filter(IndicadorNutricional.id == indicador_id).first()
 
 def create_indicador(db: Session, indicador: IndicadorNutricionalCreate):
     nuevo_indicador = IndicadorNutricional(**indicador.dict())
