@@ -5,12 +5,9 @@ from typing import Optional
 class ObjetivoProgramaBase(BaseModel):
     nombre: str
     descripcion: str
-    fecha_inicio: Optional[datetime] = None
-    fecha_finalizacion: Optional[datetime] = None
     estado: int
-    progreso: float
-    responsable: str
-    prioridad: int
+    fecha_registro: Optional[datetime] = None
+    fecha_actualizacion: Optional[datetime] = None
 
 class ObjetivoProgramaCreate(ObjetivoProgramaBase):
     pass

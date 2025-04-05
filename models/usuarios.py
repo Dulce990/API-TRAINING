@@ -28,7 +28,6 @@ class Usuario(Base):
     
 
     # Relación con Dieta
-    dietas = relationship("Dieta", back_populates="usuario")
-    # Relación con Ejercicios
-    ejercicios = relationship("Ejercicio", back_populates="usuario")
+    # Nueva relación para rutinas
+    rutinas = relationship("Rutina", back_populates="usuario")
     indicadores_nutricionales = relationship("IndicadorNutricional", back_populates="usuario")

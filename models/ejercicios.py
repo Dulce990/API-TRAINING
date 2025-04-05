@@ -25,15 +25,11 @@ class Ejercicio(Base):
     video = Column(String(255))
     tipo = Column(Enum(TipoEjercicio), nullable=False)
     estatus = Column(Boolean, nullable=False, default=True)
-    dificultad = Column(Enum(DificultadEjercicio), nullable=False)
+    dificultad = Column(Enum(DificultadEjercicio), nullable=False) # valor numerico para que desde el front, se mida la dificultad
     fecha_registro = Column(DateTime, default=datetime.utcnow)
     fecha_actualizacion = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    recomendaciones = Column(String(255))
-    restricciones = Column(String(255))
-    completado = Column(Boolean, default=False)  # Nuevo campo
-    objetivo = Column(String(255), nullable=True)  # Nuevo campo
-    fecha_personalizada = Column(Date, nullable=True)  # Nuevo campo para la fecha personalizada
-
-    # Relación con Usuario
-    user_id  = Column(Integer, ForeignKey("tbb_usuarios.id"), nullable=True)
-    usuario = relationship("Usuario", back_populates="ejercicios")
+    recomendaciones = Column(String(255)) # Por ejemplo: Tener la espalda recta.
+    restricciones = Column(String(255))# No apto para personas con problemas cardi
+    
+    # Nueva relación para rutinas
+    rutinas = relationship("Rutina", back_populates="ejercicio")

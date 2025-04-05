@@ -26,10 +26,6 @@ class EjercicioBase(BaseModel):
     dificultad: DificultadEjercicio
     recomendaciones: Optional[str] = None
     restricciones: Optional[str] = None
-    completado: bool = False  # Nuevo campo
-    objetivo: Optional[str] = None  # Nuevo campo
-    fecha_personalizada: Optional[date] = None  # Nuevo campo
-
 
 class EjercicioCreate(EjercicioBase):
     user_id: Optional[int] = None  # ✅ Añade user_id
