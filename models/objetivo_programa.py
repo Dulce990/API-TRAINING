@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
-
-Base = declarative_base()
+from config.db import Base
 
 class ObjetivoPrograma(Base):
     __tablename__ = "tbc_objetivo_programa"

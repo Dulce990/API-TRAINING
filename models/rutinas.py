@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Float, SmallInteger, Time
 from sqlalchemy.orm import relationship
 from config.db import Base
-
+from models.objetivo_programa import ObjetivoPrograma
 class Rutina(Base):
     __tablename__ = "tbc_rutinas"
 

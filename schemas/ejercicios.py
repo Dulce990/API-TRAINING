@@ -4,8 +4,6 @@ from typing import Optional
 from enum import Enum
 from datetime import date
 
-from schemas.usuarios import UsuarioR
-
 class TipoEjercicio(str, Enum):
     Aerobico = "Aerobico"
     Resistencia = "Resistencia"
@@ -28,7 +26,7 @@ class EjercicioBase(BaseModel):
     restricciones: Optional[str] = None
 
 class EjercicioCreate(EjercicioBase):
-    user_id: Optional[int] = None  # ✅ Añade user_id
+    pass
 
 class EjercicioUpdate(EjercicioBase):
     pass
@@ -37,7 +35,6 @@ class EjercicioResponse(EjercicioBase):
     id: int
     fecha_registro: datetime
     fecha_actualizacion: datetime
-    usuario: Optional[UsuarioR] = None  # Agrega la relación usuario
 
     class Config:
         from_attributes = True
