@@ -17,10 +17,6 @@ from routes.programas_saludables import router as programas_saludables_router
 from routes.images import router as image_router
 from utils.socket_manager import init_socket_manager  # Importa la función de inicialización
 
-
-
-
-
 # Creación de la aplicación FastAPI
 app = FastAPI(
     title="Gimnasio API",
@@ -42,8 +38,6 @@ app.add_middleware(
 )
 # Inicializar Socket.IO
 init_socket_manager(app)
-
-
 
 # Incluir las rutas de los módulos
 app.include_router(ejercicios_router, prefix="/api", tags=["Ejercicios"])

@@ -5,9 +5,9 @@ from typing import Optional
 class ObjetivoProgramaBase(BaseModel):
     nombre: str
     descripcion: str
-    estado: int
+    estado: bool
     fecha_registro: Optional[datetime] = None
-    fecha_actualizacion: Optional[datetime] = None
+    fecha_actualizacion: Optional[datetime]
 
 class ObjetivoProgramaCreate(ObjetivoProgramaBase):
     pass
@@ -18,7 +18,7 @@ class ObjetivoProgramaUpdate(ObjetivoProgramaBase):
 class ObjetivoProgramaResponse(ObjetivoProgramaBase):
     id: int
     fecha_registro: datetime
-    fecha_actualizacion: datetime
+    fecha_actualizacion: Optional[datetime]  # ✅ Acepta NULL
 
     class Config:
         from_attributes = True
