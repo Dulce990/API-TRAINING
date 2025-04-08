@@ -11,6 +11,6 @@ class ProgramaSaludable(Base):
     fecha_finalizacion = Column(DateTime, nullable=True)
     id_dietas = Column(Integer) 
     id_entrenador = Column(Integer) 
-    id_user = Column(Integer), 
+    id_user = Column(Integer) 
     fecha_registro = Column(DateTime, nullable=False)
     fecha_actualizacion = Column(DateTime, nullable=True)
