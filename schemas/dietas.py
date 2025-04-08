@@ -4,6 +4,7 @@ import datetime
 from schemas.usuarios import UsuarioR  # Importa el esquema de salid
 
 class DietaBase(BaseModel):
+    nombre: str
     objetivo: str
     tipo_ejercicios_recomendados: str
     dias_ejercicio: str

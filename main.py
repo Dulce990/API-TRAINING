@@ -12,6 +12,7 @@ from routes.ejercicios import router as ejercicios_router
 from routes.indicadores_nutricionales import router as indicadores_nutricionales_router
 from routes.objetivo_programa import router as objetivo_programa_router
 from routes.rutinas import router as rutinas_router
+from routes.usuarios_rol import router as usuarios_rol_router
 from routes.programas_saludables import router as programas_saludables_router
 from routes.images import router as image_router
 from utils.socket_manager import init_socket_manager  # Importa la función de inicialización
@@ -55,7 +56,7 @@ app.include_router(objetivo_programa_router, prefix="/api", tags=["Objetivos del
 app.include_router(programas_saludables_router, prefix="/api", tags=["Programas Saludables"])
 app.include_router(rutinas_router, prefix="/api", tags=["Rutinas"])
 app.include_router(image_router, prefix="/api/images", tags=["Images"])
-
+app.include_router(usuarios_rol_router, prefix="/api", tags=["Usuarios Roles"])
 
 @app.exception_handler(HTTPException)
 async def custom_http_exception_handler(request: Request, exc: HTTPException):

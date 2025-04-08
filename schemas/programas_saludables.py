@@ -7,10 +7,9 @@ class ProgramaSaludableBase(BaseModel):
     descripcion: Optional[str] = None
     fecha_inicio: datetime
     fecha_finalizacion: Optional[datetime] = None
-    estado: int
-    progreso: Optional[float] = None
-    responsable: Optional[str] = None
-    prioridad: int
+    id_dietas: int
+    id_entrenador: Optional[int] = None
+    id_user: Optional[int] = None
     fecha_registro: datetime
     fecha_actualizacion: Optional[datetime] = None
 
