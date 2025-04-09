@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.db import mongo_db
-
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
-# Importación de los routers
 from routes.usuarios import router as usuario_router
 from routes.expediente_medicoRoutes import router as expediente_medico_router
 from routes.dietas import router as dietas_router
@@ -15,10 +13,9 @@ from routes.rutinas import router as rutinas_router
 from routes.programas_saludables import router as programas_saludables_router
 from routes.images import router as image_router
 from utils.socket_manager import init_socket_manager  # Importa la función de inicialización
-
-
-
-
+from routes.google_auth import router as google_auth_router
+from dotenv import load_dotenv
+load_dotenv()
 
 # Creación de la aplicación FastAPI
 app = FastAPI(
@@ -39,10 +36,9 @@ app.add_middleware(
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los encabezados
 )
+
 # Inicializar Socket.IO
 init_socket_manager(app)
-
-
 
 # Incluir las rutas de los módulos
 app.include_router(ejercicios_router, prefix="/api", tags=["Ejercicios"])
@@ -55,6 +51,7 @@ app.include_router(objetivo_programa_router, prefix="/api", tags=["Objetivos del
 app.include_router(programas_saludables_router, prefix="/api", tags=["Programas Saludables"])
 app.include_router(rutinas_router, prefix="/api", tags=["Rutinas"])
 app.include_router(image_router, prefix="/api/images", tags=["Images"])
+app.include_router(google_auth_router, prefix="/api", tags=["Google Auth"])
 
 
 @app.exception_handler(HTTPException)
@@ -73,5 +70,4 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
         status_code=exc.status_code,
         content={"detail": exc.detail},
     )
-
 

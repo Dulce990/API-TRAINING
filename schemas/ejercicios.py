@@ -2,9 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 from enum import Enum
-from datetime import date
-
-from schemas.usuarios import UsuarioR
 
 class TipoEjercicio(str, Enum):
     Aerobico = "Aerobico"
@@ -26,13 +23,9 @@ class EjercicioBase(BaseModel):
     dificultad: DificultadEjercicio
     recomendaciones: Optional[str] = None
     restricciones: Optional[str] = None
-    completado: bool = False  # Nuevo campo
-    objetivo: Optional[str] = None  # Nuevo campo
-    fecha_personalizada: Optional[date] = None  # Nuevo campo
-
 
 class EjercicioCreate(EjercicioBase):
-    user_id: Optional[int] = None  # ✅ Añade user_id
+    pass
 
 class EjercicioUpdate(EjercicioBase):
     pass
@@ -41,7 +34,6 @@ class EjercicioResponse(EjercicioBase):
     id: int
     fecha_registro: datetime
     fecha_actualizacion: datetime
-    usuario: Optional[UsuarioR] = None  # Agrega la relación usuario
 
     class Config:
         from_attributes = True

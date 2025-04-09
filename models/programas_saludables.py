@@ -9,8 +9,8 @@ class ProgramaSaludable(Base):
     descripcion = Column(String(500), nullable=True)
     fecha_inicio = Column(DateTime, nullable=False)
     fecha_finalizacion = Column(DateTime, nullable=True)
-    estado = Column(Integer, nullable=False)
-    responsable = Column(String(255), nullable=True) #ID entrenador 
-    #   AGREGAR ID DEL CLIENTE
+    id_dietas = Column(Integer) 
+    id_entrenador = Column(Integer) 
+    id_user = Column(Integer) 
     fecha_registro = Column(DateTime, nullable=False)
     fecha_actualizacion = Column(DateTime, nullable=True)

@@ -1,8 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, Float
+from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
-
-Base = declarative_base()
+from config.db import Base
 
 class ObjetivoPrograma(Base):
     __tablename__ = "tbc_objetivo_programa"
@@ -10,11 +9,8 @@ class ObjetivoPrograma(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String(255), nullable=False)
     descripcion = Column(String(500), nullable=False)
-    fecha_inicio = Column(DateTime, nullable=True)
-    fecha_finalizacion = Column(DateTime, nullable=True)
-    estado = Column(Integer, nullable=False)
-    progreso = Column(Float, nullable=False)
-    responsable = Column(String(255), nullable=False)
-    prioridad = Column(Integer, nullable=False)
+    estado = Column(Boolean, nullable=False)
     fecha_registro = Column(DateTime, default=datetime.utcnow)
     fecha_actualizacion = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    # Nueva relación para rutinas
+    rutinas = relationship("Rutina", back_populates="objetivo")
