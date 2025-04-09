@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from models.ejercicios import Ejercicio
 from schemas.ejercicios import EjercicioCreate, EjercicioUpdate
 
@@ -14,7 +14,6 @@ def create_ejercicio(db: Session, ejercicio: EjercicioCreate):
     db.commit()
     db.refresh(nuevo_ejercicio)
     return nuevo_ejercicio
-
 
 def update_ejercicio(db: Session, ejercicio_id: int, ejercicio: EjercicioUpdate):
     db_ejercicio = db.query(Ejercicio).filter(Ejercicio.id == ejercicio_id).first()
@@ -33,18 +32,3 @@ def delete_ejercicio(db: Session, ejercicio_id: int):
     db.delete(db_ejercicio)
     db.commit()
     return True
-
-def get_progreso_usuario(db: Session, usuario_id: int):
-    ejercicios_usuario = db.query(Ejercicio).filter(
-        Ejercicio.user_id == usuario_id,
-        Ejercicio.completado == True
-    ).all()
-
-    conteo_por_tipo = {}
-    for ejercicio in ejercicios_usuario:
-        if ejercicio.tipo in conteo_por_tipo:
-            conteo_por_tipo[ejercicio.tipo] += 1
-        else:
-            conteo_por_tipo[ejercicio.tipo] = 1
-
-    return conteo_por_tipo
