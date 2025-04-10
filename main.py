@@ -16,6 +16,7 @@ from utils.socket_manager import init_socket_manager  # Importa la función de i
 from routes.google_auth import router as google_auth_router
 from dotenv import load_dotenv
 from routes.usuarios_rol import router as usuarios_rol_router
+from routes.health import router as health_router
 load_dotenv()
 
 # Creación de la aplicación FastAPI
@@ -54,6 +55,7 @@ app.include_router(rutinas_router, prefix="/api", tags=["Rutinas"])
 app.include_router(image_router, prefix="/api/images", tags=["Images"])
 app.include_router(google_auth_router, prefix="/api", tags=["Google Auth"])
 app.include_router(usuarios_rol_router, prefix="/api", tags=["Usuarios Rol"])
+app.include_router(health_router, prefix="/api", tags=["Health"])
 
 @app.exception_handler(HTTPException)
 async def custom_http_exception_handler(request: Request, exc: HTTPException):
